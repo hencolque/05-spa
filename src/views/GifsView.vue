@@ -1,18 +1,17 @@
 <template>
   <h1>Search Gifs</h1>
+
+  <Search @buscar="getGifs" />
   <div class="row">
     <div v-for="gif in gifs" :key="gif.id" class="col-12 col-md-4 g-3">
-      <div class="card">
-        <img height="250" :src="gif.images.original.url" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">{{ gif.title }}</h5>
-          <a href="#" class="btn btn-primary">Download</a>
-        </div>
-      </div>
+      <Card :gif="gif" /> 
     </div>
   </div>
 </template>
 <script>
+import Card from '@/components/Card.vue';
+import Search from '@/components/Search.vue';
+
 export default {
   data: () => ({
     gifs: []
@@ -21,14 +20,17 @@ export default {
     this.getGifs()
   },
   methods: {
-    async getGifs() {
-      const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=ewFRmvmS26XX8PwTicAKg3EXVmo6Iu4Z&q=simpson&limit=10`);
+    async getGifs(busqueda = 'pokemon') {
+      if (busqueda.trim() === '') {
+        alert('Sin búsqueda')
+        return
+      }
+
+      const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=ewFRmvmS26XX8PwTicAKg3EXVmo6Iu4Z&q=${busqueda}`);
       const { data } = await res.json();
       this.gifs = data;
     }
-  }
+  },
+  components: { Card, Search }
 }
 </script>
-<style lang="">
-  
-</style>
